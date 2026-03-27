@@ -1,6 +1,6 @@
 # HiveSec Ecosystem Hub
 
-> Streamlit control tower for your AI security agents. One pane to launch scans, view findings, and monitor the Hive.
+> Streamlit control tower for your AI security agents. One pane to monitor, launch, and review findings across all your security tools.
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -9,30 +9,28 @@
 
 ## Problem
 
-You’ve built multiple AI security agents (vuln scanners, aligners, monitors). Running them in separate terminals means:
-- No unified view of alerts
+You’ve built multiple AI security agents (vuln scanners, aligners, monitors). Running them individually means:
+- No unified view of findings
 - Manual orchestration across agents
-- Hard to correlate findings and prioritize
+- Hard to correlate alerts and prioritize
 
 ## Solution
 
 HiveSec Ecosystem Hub is a Streamlit dashboard that:
-
-- **Auto‑discovers agents** in the `agents/` folder via a simple plugin system
-- Shows **KPI cards**: alerts today, active agents, critical CVSS count
-- **Launch scans** and watch progress in real time
+- Registers all HiveSec agents via a simple plugin system
+- Provides KPI cards (alerts today, active agents, critical CVSS)
+- Lets you launch scans, view results, and drill into reports
 - Stores findings in a shared SQLite/Postgres backend
-- Provides drill‑down views for each agent’s report
 
 Result: One command (`streamlit run Home.py`) gives you a live security operations center for your AI agents.
 
 ## Features
 
-- Agent registry — drop a new agent module into `agents/` and it appears
-- Real‑time KPI dashboard
-- Unified findings store (SQLite)
-- Scan launch controls and progress
-- Extensible UI components per agent
+- **Agent registry** — Auto‑discovers agents in `agents/` folder
+- **Real‑time KPI dashboard** — Alerts, agents status, trends
+- **Unified findings store** — SQLite + optional Postgres
+- **Launch & monitor** — Trigger scans and watch progress
+- **Extensible** — Drop a new agent module in `agents/` and it appears
 
 ## Quickstart
 
@@ -45,7 +43,7 @@ pip install -r requirements.txt
 # 2. Run the dashboard
 streamlit run Home.py
 
-# 3. Open http://localhost:8501
+# 3. Open http://localhost:8501 in your browser
 ```
 
 ## Screenshots
@@ -53,7 +51,7 @@ streamlit run Home.py
 ![Dashboard overview](docs/overview.png)
 _Figure: Top‑level KPI cards and recent alerts_
 
-![Agent detail](docs/agent-detail.png)
+![Agent details](docs/agent-detail.png)
 _Figure: Drill‑into a specific agent’s findings_
 
 ## Architecture
@@ -72,39 +70,40 @@ graph TD
 
 ## Adding a New Agent
 
-1. Create `agents/my_agent.py` implementing:
+1. Create `agents/my_agent.py` with a `MyNewAgent` class implementing:
    - `name() -> str`
    - `scan(target: str) -> List[Finding]`
    - `metadata() -> dict`
-2. Restart dashboard — auto‑registers.
+2. Restart the dashboard — it auto‑registers.
+3. Optionally add an icon to `assets/icons/` and update `AGENTS.md`.
 
 See `agents/EXAMPLE_AGENT.py` for a template.
 
 ## Development
 
 ```bash
-# Hot reload
+# Run with hot‑reload
 streamlit run Home.py --server.runOnSave true
 ```
 
-Tests (minimal):
+Tests (minimal sanity checks):
 
 ```bash
 pytest -q
 ```
 
-## Production
+## Production Deployment
 
-- Deploy on Streamlit Community Cloud or your VPS
-- Set `DATABASE_URL` for Postgres (recommended for multi‑user)
-- Enable authentication via Streamlit secrets if needed
+- Deploy on Streamlit Community Cloud (free) or your own VPS.
+- Set `DATABASE_URL` for Postgres (recommended for multi‑user).
+- Enable authentication via Streamlit secrets if needed.
 
 ## Roadmap
 
 - [ ] Role‑based access control
 - [ ] Webhook alerts to Slack/Telegram
 - [ ] Correlated attack chain view
-- [ ] Agent health metrics
+- [ ] Agent health metrics (runtime, memory)
 
 ## License
 
