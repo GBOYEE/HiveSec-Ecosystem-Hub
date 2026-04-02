@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  hub:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///data/hub.db}
+      - STREAMLIT_SERVER_HEADLESS=true
+    volumes:
+      - ./data:/app/data
+      - ./agents:/app/agents
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Optional: PostgreSQL for multi-user
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hivesec}
+      POSTGRES_DB: hivesec
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    profiles: ["postgres"]
+
+volumes:
+  postgres_data:

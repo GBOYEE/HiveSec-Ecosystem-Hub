@@ -1,110 +1,125 @@
-# HiveSec Ecosystem Hub
+# HiveSec Ecosystem Hub 🛡️
 
-> Streamlit control tower for your AI security agents. One pane to monitor, launch, and review findings across all your security tools.
+Streamlit control tower for your AI security agents. One pane to monitor, launch, and review findings across all your security tools.
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gboyee.streamlit.app/HiveSec-Ecosystem-Hub)
 
-## Problem
+## ✨ Features
 
-You’ve built multiple AI security agents (vuln scanners, aligners, monitors). Running them individually means:
-- No unified view of findings
-- Manual orchestration across agents
-- Hard to correlate alerts and prioritize
-
-## Solution
-
-HiveSec Ecosystem Hub is a Streamlit dashboard that:
-- Registers all HiveSec agents via a simple plugin system
-- Provides KPI cards (alerts today, active agents, critical CVSS)
-- Lets you launch scans, view results, and drill into reports
-- Stores findings in a shared SQLite/Postgres backend
-
-Result: One command (`streamlit run Home.py`) gives you a live security operations center for your AI agents.
-
-## Features
-
-- **Agent registry** — Auto‑discovers agents in `agents/` folder
-- **Real‑time KPI dashboard** — Alerts, agents status, trends
+- **Agent registry** — Auto-discovers agents in `agents/` folder
+- **Real-time KPI dashboard** — Alerts, agents status, trends
 - **Unified findings store** — SQLite + optional Postgres
 - **Launch & monitor** — Trigger scans and watch progress
-- **Extensible** — Drop a new agent module in `agents/` and it appears
+- **Production ready** — Docker, health checks, CI, structured logging
 
-## Quickstart
+---
+
+## 🚀 Quick Start
 
 ```bash
-# 1. Clone and install
+# Clone and install
 git clone https://github.com/GBOYEE/HiveSec-Ecosystem-Hub.git
 cd HiveSec-Ecosystem-Hub
 pip install -r requirements.txt
 
-# 2. Run the dashboard
+# Run the dashboard
 streamlit run Home.py
 
-# 3. Open http://localhost:8501 in your browser
+# Open http://localhost:8501
 ```
 
-## Screenshots
+---
 
-![Dashboard overview](docs/overview.png)
-_Figure: Top‑level KPI cards and recent alerts_
+## 🐳 Deployment
 
-![Agent details](docs/agent-detail.png)
-_Figure: Drill‑into a specific agent’s findings_
+### Docker Compose (recommended)
 
-## Architecture
-
-```mermaid
-graph TD
-    A[Streamlit UI] --> B[Agent Registry]
-    B --> C[agents/]
-    A --> D[Findings Store]
-    D --> E[(SQLite)]
-    C --> F[Agent Modules]
-    F --> D
-    A --> G[Launch Controls]
-    G --> F
+```bash
+docker-compose up -d
+# Open http://localhost:8501
 ```
 
-## Adding a New Agent
+Includes optional PostgreSQL service (uncomment profile).
 
-1. Create `agents/my_agent.py` with a `MyNewAgent` class implementing:
+### Streamlit Cloud
+
+Push to GitHub and deploy via Streamlit Community Cloud. Set secrets in the dashboard settings.
+
+---
+
+## 🔐 Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite:///data/hub.db` | Database connection (SQLite or Postgres) |
+| `STREAMLIT_SERVER_HEADLESS` | `true` | Run in headless mode (Docker) |
+
+---
+
+## 📡 Health Check
+
+- Endpoint: `GET /healthz` returns "ok"
+- Docker healthcheck enabled by default
+
+---
+
+## 🏗️ Architecture
+
+See [Production Guide](README-PRODUCTION.md#architecture) for full diagram.
+
+---
+
+## 🧩 Adding Agents
+
+1. Create `agents/my_agent.py` implementing:
    - `name() -> str`
    - `scan(target: str) -> List[Finding]`
    - `metadata() -> dict`
-2. Restart the dashboard — it auto‑registers.
-3. Optionally add an icon to `assets/icons/` and update `AGENTS.md`.
+2. Restart dashboard — auto-registered.
+3. Optional: add icon to `assets/icons/`.
 
-See `agents/EXAMPLE_AGENT.py` for a template.
+Template: `agents/EXAMPLE_AGENT.py`
 
-## Development
+---
+
+## 🛠️ Development
 
 ```bash
-# Run with hot‑reload
+# Hot reload
 streamlit run Home.py --server.runOnSave true
+
+# Lint
+black .
+flake8 .
+
+# Type check
+mypy . --ignore-missing-imports
 ```
 
-Tests (minimal sanity checks):
-
+Pre-commit hooks:
 ```bash
-pytest -q
+pre-commit install
 ```
 
-## Production Deployment
+CI runs on push.
 
-- Deploy on Streamlit Community Cloud (free) or your own VPS.
-- Set `DATABASE_URL` for Postgres (recommended for multi‑user).
-- Enable authentication via Streamlit secrets if needed.
+---
 
-## Roadmap
+## 🚢 Production
 
-- [ ] Role‑based access control
-- [ ] Webhook alerts to Slack/Telegram
-- [ ] Correlated attack chain view
-- [ ] Agent health metrics (runtime, memory)
+- Use Docker Compose for easy deployment
+- For multi-user, switch to Postgres via `DATABASE_URL`
+- Enable authentication via Streamlit secrets if needed
+- Set `STREAMLIT_SERVER_PORT=8501` and reverse proxy with Nginx if desired
 
-## License
+Full guide: [README-PRODUCTION.md](README-PRODUCTION.md)
 
-MIT. See [LICENSE](LICENSE).
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE).
