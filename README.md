@@ -69,7 +69,30 @@ Push to GitHub and deploy via Streamlit Community Cloud. Set secrets in the dash
 
 ## 🏗️ Architecture
 
-See [Production Guide](README-PRODUCTION.md#architecture) for full diagram.
+```mermaid
+flowchart TD
+    UI[Streamlit Dashboard]
+    REG[Agent Registry]
+    DB[(Database)]
+    AG1[Agent 1]
+    AG2[Agent 2]
+    AGN[Agent N]
+
+    UI --> REG
+    REG --> AG1 & AG2 & AGN
+    AG1 & AG2 & AGN --> DB
+    UI --> DB
+
+    subgraph "Agents"
+        AG1
+        AG2
+        AGN
+    end
+```
+
+Agents auto-discovered from `agents/` folder. Each agent implements a common interface (`scan()`) and returns findings to the central store.
+
+Detailed production architecture: [README-PRODUCTION.md](README-PRODUCTION.md#architecture)
 
 ---
 
