@@ -1,12 +1,38 @@
-# HiveSec Ecosystem Hub 🛡️
+# HiveSec Ecosystem Hub — AI Security Dashboard
 
-Streamlit control tower for your AI security agents. One pane to monitor, launch, and review findings across all your security tools.
+Centralized dashboard for monitoring and securing multi-agent systems.
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gboyee.streamlit.app/HiveSec-Ecosystem-Hub)
+
+## 🚀 What Problem This Solves
+
+When running multiple AI agents or autonomous systems, you need visibility: which agents are active, what vulnerabilities or misalignments have been detected, and the ability to intervene quickly. Existing monitoring tools don't understand AI-specific risks. HiveSec provides a security-focused control plane for agent fleets.
+
+## ⚙️ How It Works
+
+- **Agent registry** auto-discovers agents from `agents/` folder
+- **Real-time dashboard** shows alerts, agent status, and trends
+- **Unified findings store** (SQLite/Postgres) aggregates scan results
+- **Launch & monitor** — trigger scans and watch progress
+- **Audit trails** — every action logged with timestamps
+
+The system is built on Streamlit for rapid UI, with a plugin architecture for adding new security agents. Each agent implements a `scan()` function and returns standardized Finding objects.
+
+## 📈 Why It Matters
+
+- **Centralized visibility**: One pane for all your AI security agents
+- **Rapid response**: Spot suspicious activity or failures instantly
+- **Extensible**: Drop in new agents without touching the core
+- **Production-ready**: Docker, health checks, CI, structured logging
+- **Auditability**: Full logs for compliance and forensics
+
+Result: You can operate AI agent fleets with confidence and oversight.
+
+---
 
 ## ✨ Features
 
