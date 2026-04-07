@@ -1,97 +1,42 @@
 # HiveSec Ecosystem Hub — AI Security Dashboard
 
-Centralized dashboard for monitoring and securing multi-agent systems.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-✓-red?logo=streamlit)](https://streamlit.io)
+[![CI](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub/actions/workflows/ci.yml/badge.svg)](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/GBOYEE/HiveSec-Ecosystem-Hub)](https://codecov.io/gh/GBOYEE/HiveSec-Ecosystem-Hub)
 
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gboyee.streamlit.app/HiveSec-Ecosystem-Hub)
+**Security monitoring for AI agent fleets.** Centralized dashboard to discover agents, run scans, track vulnerabilities, and maintain audit trails across your entire autonomous ecosystem.
 
-## 🚀 What Problem This Solves
-
-When running multiple AI agents or autonomous systems, you need visibility: which agents are active, what vulnerabilities or misalignments have been detected, and the ability to intervene quickly. Existing monitoring tools don't understand AI-specific risks. HiveSec provides a security-focused control plane for agent fleets.
-
-## ⚙️ How It Works
-
-- **Agent registry** auto-discovers agents from `agents/` folder
-- **Real-time dashboard** shows alerts, agent status, and trends
-- **Unified findings store** (SQLite/Postgres) aggregates scan results
-- **Launch & monitor** — trigger scans and watch progress
-- **Audit trails** — every action logged with timestamps
-
-The system is built on Streamlit for rapid UI, with a plugin architecture for adding new security agents. Each agent implements a `scan()` function and returns standardized Finding objects.
-
-## 📈 Why It Matters
-
-- **Centralized visibility**: One pane for all your AI security agents
-- **Rapid response**: Spot suspicious activity or failures instantly
-- **Extensible**: Drop in new agents without touching the core
-- **Production-ready**: Docker, health checks, CI, structured logging
-- **Auditability**: Full logs for compliance and forensics
-
-Result: You can operate AI agent fleets with confidence and oversight.
-
----
+<p align="center">
+  <img src="https://raw.githubusercontent.com/GBOYEE/HiveSec-Ecosystem-Hub/main/screenshots/dashboard.png" alt="HiveSec dashboard" width="700"/>
+</p>
 
 ## ✨ Features
 
-- **Agent registry** — Auto-discovers agents in `agents/` folder
-- **Real-time KPI dashboard** — Alerts, agents status, trends
-- **Unified findings store** — SQLite + optional Postgres
-- **Launch & monitor** — Trigger scans and watch progress
-- **Production ready** — Docker, health checks, CI, structured logging
-
----
+- 🔍 **Agent Auto-Discovery** — Automatically finds agents from `agents/` folder
+- 🛡️ **Unified Findings Store** — SQLite (dev) or Postgres (prod) for scan results
+- 🧪 **Pluggable Scanners** — Add new security agents by dropping Python files
+- 📊 **Real-Time KPIs** — Alert counts, agent status, trends
+- 🔬 **Scan Monitoring** — Launch scans, watch progress, view detailed results
+- 📜 **Audit Trails** — Full logging for compliance and forensics
+- 🐳 **Docker Ready** — Compose setup with optional Postgres
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone and install
 git clone https://github.com/GBOYEE/HiveSec-Ecosystem-Hub.git
 cd HiveSec-Ecosystem-Hub
 pip install -r requirements.txt
-
-# Run the dashboard
 streamlit run Home.py
-
-# Open http://localhost:8501
 ```
 
----
+Open: http://localhost:8501
 
-## 🐳 Deployment
-
-### Docker Compose (recommended)
-
+Or with Docker:
 ```bash
-docker-compose up -d
-# Open http://localhost:8501
+docker compose up -d
 ```
-
-Includes optional PostgreSQL service (uncomment profile).
-
-### Streamlit Cloud
-
-Push to GitHub and deploy via Streamlit Community Cloud. Set secrets in the dashboard settings.
-
----
-
-## 🔐 Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `sqlite:///data/hub.db` | Database connection (SQLite or Postgres) |
-| `STREAMLIT_SERVER_HEADLESS` | `true` | Run in headless mode (Docker) |
-
----
-
-## 📡 Health Check
-
-- Endpoint: `GET /healthz` returns "ok"
-- Docker healthcheck enabled by default
-
----
 
 ## 🏗️ Architecture
 
@@ -116,59 +61,62 @@ flowchart TD
     end
 ```
 
-Agents auto-discovered from `agents/` folder. Each agent implements a common interface (`scan()`) and returns findings to the central store.
-
-Detailed production architecture: [README-PRODUCTION.md](README-PRODUCTION.md#architecture)
-
----
-
-## 🧩 Adding Agents
-
-1. Create `agents/my_agent.py` implementing:
-   - `name() -> str`
-   - `scan(target: str) -> List[Finding]`
-   - `metadata() -> dict`
-2. Restart dashboard — auto-registered.
-3. Optional: add icon to `assets/icons/`.
-
-Template: `agents/EXAMPLE_AGENT.py`
-
----
-
-## 🛠️ Development
-
-```bash
-# Hot reload
-streamlit run Home.py --server.runOnSave true
-
-# Lint
-black .
-flake8 .
-
-# Type check
-mypy . --ignore-missing-imports
+Agents auto-discovered from `agents/` folder. Each implements:
+```python
+def name() -> str: ...
+def scan(target: str) -> List[Finding]: ...
+def metadata() -> dict: ...
 ```
 
-Pre-commit hooks:
+See [docs/architecture.md](docs/architecture.md).
+
+## 📦 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| UI | Streamlit |
+| Language | Python 3.11+ |
+| Database | SQLite (dev) / PostgreSQL (prod) |
+| Cache | Redis (optional) |
+| Agents | Pluggable Python modules |
+
+## 🧪 Testing & CI
+
 ```bash
-pre-commit install
+pytest tests/ -v --cov=hivesec
 ```
 
-CI runs on push.
+CI runs on push: lint, tests, coverage.
 
----
+## 📚 Documentation
 
-## 🚢 Production
+- [Getting Started](docs/README.md)
+- [Agent Development Guide](docs/agent-dev.md)
+- [API Reference](docs/api.md)
+- [Contributing](CONTRIBUTING.md)
 
-- Use Docker Compose for easy deployment
-- For multi-user, switch to Postgres via `DATABASE_URL`
-- Enable authentication via Streamlit secrets if needed
-- Set `STREAMLIT_SERVER_PORT=8501` and reverse proxy with Nginx if desired
+## 🎯 Roadmap
 
-Full guide: [README-PRODUCTION.md](README-PRODUCTION.md)
+- [ ] OAuth2 authentication for dashboard
+- [ ] Advanced filtering & saved searches
+- [ ] Email/Slack notifications for critical findings
+- [ ] Multi-tenant support
+- [ ] Agent marketplace (publish/share scanners)
 
----
+## 🤝 Contributing
+
+Add new security agents! Create `agents/my_scanner.py` implementing the `scan()` interface and submit a PR.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+Built by <a href="https://github.com/GBOYEE">Oyebanji Adegboyega</a> • 
+<a href="https://gboyee.github.io">Portfolio</a> • 
+<a href="https://twitter.com/Gboyee_0">@Gboyee_0</a>
+</p>
